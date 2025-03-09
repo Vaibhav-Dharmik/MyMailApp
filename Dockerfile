@@ -4,7 +4,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy the Maven project files
-COPY ./gmail-clone-backend/target/gmail-clone-backend-*.jar app.jar
+COPY ./target/gmail-clone-backend-*.jar app.jar
 
 # Expose the application port
 EXPOSE 8080
