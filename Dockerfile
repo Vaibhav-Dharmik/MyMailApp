@@ -4,6 +4,14 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy the Maven project files
+COPY . .
+
+# Build the project using Maven
+RUN mvn clean install  \
+    && RUN mvn build  \
+    && RUN mvn package
+
+# Copy the Maven project files
 COPY ./target/gmail-clone-backend-*.jar app.jar
 
 # Expose the application port
