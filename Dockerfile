@@ -1,21 +1,30 @@
-FROM openjdk:17-jdk-slim
+# ===========================
+# Stage 1: Build the application using Maven
+# ===========================
+FROM maven:3.9.4-eclipse-temurin-17 AS build
 
 # Set the working directory
 WORKDIR /app
 
-# Copy the Maven project files
+# Copy the entire project into the container
 COPY . .
 
-# Build the project using Maven
-RUN mvn clean install  \
-    && RUN mvn build  \
-    && RUN mvn package
+# Build the application
+RUN mvn clean install
 
-# Copy the Maven project files
-COPY ./target/gmail-clone-backend-*.jar app.jar
+# ===========================
+# Stage 2: Run the application
+# ===========================
+FROM openjdk:17-jdk-slim
 
-# Expose the application port
+# Set working directory
+WORKDIR /app
+
+# Copy the generated JAR from the build stage
+COPY --from=build /app/target/gmail-clone-backend-*.jar app.jar
+
+# Expose port 8080
 EXPOSE 8080
 
-# Command to run the application
-CMD ["java", "-jar", "app.jar"]
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
